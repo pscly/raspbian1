@@ -44,7 +44,8 @@ def write(val):
     #写入字节数据，将数字值转化成模拟值从AOUT输出
 
 if __name__ == "__main__":
-    setup(0x27) 
+    m = 0x27
+    setup(m) 
  #在树莓派终端上使用命令“sudo i2cdetect -y 1”，查询出PCF8591的地址为0x48
     while True:
         print('电位计   AIN0 = ', read(0))   #电位计模拟信号转化的数字值

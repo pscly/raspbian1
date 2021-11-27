@@ -3,13 +3,14 @@ import PCF8591 as ADC
 import RPi.GPIO as GPIO
 import time
 import math
+m = 0x27
 
 DO = 17
 Buzz = 18
 GPIO.setmode(GPIO.BCM)
 
 def setup():
-    ADC.setup(0x27)
+    ADC.setup(m)
     GPIO.setup  (DO,    GPIO.IN)
     GPIO.setup  (Buzz,  GPIO.OUT)
     GPIO.output (Buzz,  1)  #高电平不响，低电平触发报警蜂鸣
