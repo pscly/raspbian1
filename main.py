@@ -9,7 +9,7 @@ Buzz = 18
 GPIO.setmode(GPIO.BCM)
 
 def setup():
-    ADC.setup(0x48)
+    ADC.setup(0x27)
     GPIO.setup  (DO,    GPIO.IN)
     GPIO.setup  (Buzz,  GPIO.OUT)
     GPIO.output (Buzz,  1)  #高电平不响，低电平触发报警蜂鸣
