@@ -19,13 +19,13 @@ def Print(x):
     if x == 1:
         print('')
         print('   *********')
-        print('   * Safe~ *')
+        print('   * 气体好 *')
         print('   *********')
         print('')
     if x == 0:
         print('')
         print('   ***************')
-        print('   * Danger Gas! *')
+        print('   * 气体不好 *')
         print('   ***************')
         print('')
 
