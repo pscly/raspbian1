@@ -16,26 +16,26 @@ def setup():
 
 def Print(x):
     if x == 1:
-        print('')
-        print('   *********')
-        print('   * Safe~ *')
-        print('   *********')
-        print('')
+        print ''
+        print '   *********'
+        print '   * Safe~ *'
+        print '   *********'
+        print ''
     if x == 0:
-        print('')
-        print('   ***************')
-        print('   * Danger Gas! *')
-        print('   ***************')
-        print('')
+        print ''
+        print '   ***************'
+        print '   * Danger Gas! *'
+        print '   ***************'
+        print ''
 
 def loop():
     status = 1
     count = 0
     while True:
-        print('ADC.read(0)==' , ADC.read(0))  #有烟雾时，该值增大
+        print 'ADC.read(0)==' , ADC.read(0)  #有烟雾时，该值增大
         
         tmp = GPIO.input(DO);
-        print('tmp==' ,tmp)    
+        print 'tmp==' ,tmp    
 #无烟雾时为高电平，tmp=1,打印safe，有烟雾时为低电平，打印Danger Gas！
         if tmp != status:
             Print(tmp)
