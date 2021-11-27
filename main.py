@@ -1,21 +1,64 @@
-#! /usr/bin/env python3
-import RPi.GPIO as GPIO # 导入库，并进行别名的设置
+#!/usr/bin/env python
+import PCF8591 as ADC
+import RPi.GPIO as GPIO
 import time
+import math
 
-CHANNEL=36 # 确定引脚口。按照真实的位置确定
-GPIO.setmode(GPIO.BOARD) # 选择引脚系统，这里我们选择了BOARD
-GPIO.setup(CHANNEL,GPIO.IN,pull_up_down=GPIO.PUD_DOWN)
-#初始化引脚，将36号引脚设置为输入下拉电阻，因为在初始化的时候不确定的的引电平，因此这样设置是用来保证精准，（但是也可以不写“pull_up_down=GPIO.PUD_DOWN”）
+DO = 17
+Buzz = 18
+GPIO.setmode(GPIO.BCM)
 
-# 带有异常处理的主程序
-try:
-    while True: # 执行一个while死循环
-        status=GPIO.input(CHANNEL) # 检测36号引脚口的输入高低电平状态
-        #print(status) # 实时打印此时的电平状态
-        if status == True: # 如果为高电平，说明MQ-2正常，并打印“OK”
-            print ( ' 正常 ' )      
-        else:    # 如果为低电平，说明MQ-2检测到有害气体，并打印“dangerous”
-            print ( ' 检测到危险气体 ! ! ! ' )
-        time.sleep(0.1) # 睡眠0.1秒，以后再执行while循环
-except KeyboardInterrupt: # 异常处理，当检测按下键盘的Ctrl+C，就会退出这个>脚本
-    GPIO.cleanup() # 清理运行完成后的残余
+def setup():
+    ADC.setup(0x48)
+    GPIO.setup  (DO,    GPIO.IN)
+    GPIO.setup  (Buzz,  GPIO.OUT)
+    GPIO.output (Buzz,  1)  #高电平不响，低电平触发报警蜂鸣
+
+def Print(x):
+    if x == 1:
+        print ''
+        print '   *********'
+        print '   * Safe~ *'
+        print '   *********'
+        print ''
+    if x == 0:
+        print ''
+        print '   ***************'
+        print '   * Danger Gas! *'
+        print '   ***************'
+        print ''
+
+def loop():
+    status = 1
+    count = 0
+    while True:
+        print 'ADC.read(0)==' , ADC.read(0)  #有烟雾时，该值增大
+        
+        tmp = GPIO.input(DO);
+        print 'tmp==' ,tmp    
+#无烟雾时为高电平，tmp=1,打印safe，有烟雾时为低电平，打印Danger Gas！
+        if tmp != status:
+            Print(tmp)
+            status = tmp
+        if status == 0:
+            count += 1
+            if count % 2 == 0:
+                GPIO.output(Buzz, 0)  #检测到烟雾后，报警声为断续蜂鸣声，低电平为响
+            else:
+                GPIO.output(Buzz, 1)  #高电平不响
+        else:
+            GPIO.output(Buzz, 1)
+            count = 0
+                
+        time.sleep(0.2)
+
+def destroy():
+    GPIO.output(Buzz, 1)
+    GPIO.cleanup()
+
+if __name__ == '__main__':
+    try:
+        setup()
+        loop()
+    except KeyboardInterrupt: 
+        destroy()
